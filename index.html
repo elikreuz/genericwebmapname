@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+  <html>
+    <head>
+      <title> Generic Map Name </title>
+	  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css" />
+	  <link rel="stylesheet" href="main.css"/>
+	 //<style>
+	  //#map {
+	  //height:100vh;}
+	  //</style>
+    </head>
+  <body>
+    <H1>Generic Map Name</H1>
+	<div id="map"></div>
+	<script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"></script>
+	  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-hash/0.2.1/leaflet-hash.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.5.0/proj4.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/proj4leaflet/1.0.2/proj4leaflet.js"></script>
+	<script>
+  //initialize the map         
+ //var map = L.map('map').setView([51.9700000, 5.6666700], 15);
+  var RDnew = new L.Proj.CRS( 'EPSG:28992','+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000 +ellps=bessel +units=m +towgs84=565.2369,50.0087,465.658,-0.406857330322398,0.350732676542563,-1.8703473836068,4.0812 +no_defs',
+    {
+        resolutions: [3440.640, 1720.320, 860.160, 430.080, 215.040, 107.520, 53.760, 26.880, 13.440, 6.720, 3.360, 1.680, 0.840, 0.420, 0.210],
+        bounds: L.bounds([-285401.92, 22598.08], [595401.9199999999, 903401.9199999999]),
+        origin: [-285401.92, 22598.08]
+    }
+);
+var myGeojson = {
+ "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            5.660405158996581,
+            51.9638565534757
+          ],
+          [
+            5.660308599472046,
+            51.96391604940293
+          ],
+          [
+            5.661295652389526,
+            51.964623383820495
+          ],
+          [
+            5.660737752914429,
+            51.96480186831168
+          ],
+          [
+            5.659868717193603,
+            51.96532409662966
+          ],
+          [
+            5.659675598144531,
+            51.96552240958672
+          ],
+          [
+            5.661284923553467,
+            51.96631565264031
+          ],
+          [
+            5.661510229110718,
+            51.96634209383365
+          ],
+          [
+            5.663409233093262,
+            51.96749227064549
+          ],
+          [
+            5.66394567489624,
+            51.96776328502249
+          ],
+          [
+            5.664675235748291,
+            51.96800785756561
+          ],
+          [
+            5.665308237075806,
+            51.96817310852836
+          ],
+          [
+            5.665082931518555,
+            51.9688539360681
+          ],
+          [
+            5.665222406387329,
+            51.96931662849286
+          ],
+          [
+            5.6642675399780265,
+            51.97393668082494
+          ],
+          [
+            5.664095878601074,
+            51.97425392015943
+          ],
+          [
+            5.662572383880615,
+            51.97602513182988
+          ],
+          [
+            5.661284923553467,
+            51.97687105896529
+          ],
+          [
+            5.657958984374999,
+            51.97840426118799
+          ],
+          [
+            5.656843185424805,
+            51.97946161145986
+          ],
+          [
+            5.655770301818848,
+            51.980783264205414
+          ],
+          [
+            5.656070709228516,
+            51.981655533656955
+          ],
+          [
+            5.658087730407715,
+            51.98236919602903
+          ],
+          [
+            5.6632161140441895,
+            51.983492530431704
+          ],
+          [
+            5.662872791290283,
+            51.98396828709792
+          ],
+          [
+            5.663623809814453,
+            51.98462905186216
+          ],
+          [
+            5.663409233093262,
+            51.98486692479096
+          ]
+        ]
+      }
+    }
+  ]
+}
+var map = L.map('map', {
+    crs: RDnew,
+    zoom: 9, //Zoom scale RD new
+    center: [51.9741, 5.6688] //webmercator coördinaten
+});
+  
+  //Create baselayer - tiles         
+ var pdokachtergrondkaart = new L.TileLayer('http://geodata.nationaalgeoregister.nl/tms/1.0.0/brtachtergrondkaart/{z}/{x}/{y}.png', {
+    minZoom: 0,
+    maxZoom: 13,
+    tms: true,
+    attribution: 'Map data: <a href="http://www.kadaster.nl">Kadaster</a>'
+});
+
+pdokachtergrondkaart.addTo(map);
+// ADD a WMS layer
+var cbs = L.tileLayer.wms('https://geodata.nationaalgeoregister.nl/wijkenbuurten2018/wms', {
+        'layers': 'cbs_buurten_2018',
+        'styles': 'wijkenbuurten2018:wijkenbuurten_thema_buurten_default',
+        'srs': 'EPSG:28992',
+        'format': 'image/png',
+        'transparent': true
+    }).addTo(map);
+  
+  // ADD the geoJSON Layer
+L.geoJSON(myGeojson).addTo(map);
+
+  //Add markers
+  var home = L.marker([51.963880, 5.660510]).addTo(map);
+  var popup = "I live here";
+home.bindPopup(popup);
+  var cafe = L.marker([51.964390, 5.662390]).addTo(map);
+  var popup = "The Doctor!";
+cafe.bindPopup(popup);
+  var forum = L.marker([51.985210, 5.663450]).addTo(map);
+  var popup = "Study Hard";
+forum.bindPopup(popup);
+  var bank = L.marker([51.969470, 5.667970]).addTo(map);
+  var popup = "Make Money";
+bank.bindPopup(popup);
+  var thrift = L.marker([51.964650, 5.66430]).addTo(map);
+  var popup = "Spend Money... responsibly";
+thrift.bindPopup(popup);
+var circle = L.circle([51.986820, 5.663470], 500, {
+  color: 'lightcoral',
+  fillColor: '#f08080',
+  fillOpacity: 0.5
+}).addTo(map);
+  var polygon = L.polygon([
+  [51.963880, 5.660510],
+  [51.964390, 5.662390],
+  [51.964650, 5.66430],
+  [51.969470, 5.667970],
+  [51.985210, 5.663450]
+]).addTo(map);
+</script>
+  </body>
+</html>
